@@ -189,3 +189,22 @@ function movieThis(queryURL) {
 	//  * Plot of the movie.
 	//  * Actors in the movie.
 }
+
+// Do what it says stuff
+function doWhatItSays() {
+	fs.readFile("random.txt", "utf8", function (error, data) {
+		if (error) {
+			return console.log(error);
+		}
+		console.log(data);
+		// Then split it by commas (to make it more readable; also makes it an arry)
+		var dataArr = data.split(",");
+		// We will then re-display the content as an array for later use.
+		console.log(dataArr[0]);
+		let one = dataArr[0];
+		let two = dataArr[1];
+		console.log(`Ths is one: ${one} & this is two: ${two}.`);
+
+
+	});
+}
