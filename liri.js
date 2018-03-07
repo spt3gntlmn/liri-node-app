@@ -1,64 +1,108 @@
 require("dotenv").config();
 
+let inquirer = require(`inquirer`);
 let fs = require("fs"); //reads and writes files
-let twitter = require("twitter");
-let spotify = require("spotify");
+let keys = require("./keys.js");
+let Twitter = require("twitter");
+let Spotify = require("node-spotify-api");
 let request = require("request");
 let liriArg = process.argv[2];
-let keys = require("./keys.js");
+let twittersToPrint = [];
+let twitterObj;
+var title = process.argv[3];
 
-// let mySpotify = new spotify(keys.spotify);
-let myTwitter = new twitter(keys.twitter);
+let samsTwitter = new Twitter(keys.twitter);
 
-
-// Make it so liri.js can take in one of the following commands:
-switch (liriArg) {
-	case "test": console.log("Zoom says the teen w/ the new care!");
-	case `my-tweets`: Tweets(), console.log("hey!"); break;
-	case `spotify-this-song`: spotifyThisSong(); break;
-	case `movie-this`: movieThis(); break;
-	case `do-what-it-says`: doWhatItSays(); break;
-	// The default case
-	default: console.log(`\nPlease type: 'node liri.js' and then type in one of the following:
+inquirer
+	.prompt([
+		{
+			type: "list",
+			message: "What would you like to do?",
+			choices: [`my-tweets`, `spotify-this-song`, `movie-this`, `do-what-it-says`, ""],
+			name: "options"
+		},
+	]).then(function (inquirerResponse) {
+		// Make it so liri.js can take in one of the following commands:
+		switch (inquirerResponse) {
+			// case "test": console.log("Zoom says the teen w/ the new car!"); break;
+			case `my-tweets`: Tweets(); break;
+			case `spotify-this-song`: spotifyCall(title); break;
+			case `movie-this`: movieThis(); break;
+			case `do-what-it-says`: doWhatItSays(); break;
+			// The default case
+			default: console.log(`\nPlease type: 'node liri.js' and then type in one of the following:
 		my-tweets\n
 		spotify-this-song\n
 		movie-this\n
 		do-what-it-says\n
 		Note: if the title is more than one word place quotes ("") around it.  Thanks!
 		`)
-};
-
+		};
+	});
 // Twitter bot stuff
 
 function Tweets() {
-	let myTwitter = new twitter(
-		{
-			consumer_key: process.env.TWITTER_CONSUMER_KEY,
-			consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-			access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
-			access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
-		});
 
-	let twitUsername = process.argv[3];
-	if (!twitUsername) {
-		twitUsername = 'liri-bots';
-	}
-	let params = { screen_name: twitUsername };
-	myTwitter.get("statuses/user_timeline/", params, function (error, tweets, response) {
+	// let twitUsername = process.argv[3];
+	// if (!twitUsername) {
+	// 	twitUsername = 'Liri_Bots'; console.log("Hey!");
+	// }
+	let params = { screen_name: 'Liri_Bots' };
+	samsTwitter.get("statuses/user_timeline/", { count: 20 }, function (error, tweets, response) {
 		if (!error) {
-			for (var i = 0; i < 20; i++) {
-				//console.log(response); // Show the full response in the terminal
-				var twitterResult
-				"@" + tweets[i].user.screen_name + ": " +
-					tweets[i].text + "\r\n" +
-					tweets[i].create_at + "\r\n" +
-					"------------------------------ " + i + " ------------------------------" + "\r\n";
-				console.log(twitterResults);
-				log(twitterResults); // calling log function
+			for (let i = 0; i < tweets.length; i++) {
+				let twitterObj = {};
+				twitterObj.name = tweets[i].user.name;
+				twitterObj.screenName = tweets[i].user.screen_name
+				twitterObj.text = tweets[i].text;
+				twitterObj.created = tweets[i].user.created_at;
+				twittersToPrint.push(twitterObj);
 			}
+			console.log(twittersToPrint);
 		} else {
-			console.log("Error :" + error);
+			console.log(error);
 			return;
 		}
 	});
+}
+
+function spotifyCall(title) {
+	var mySpotify = new Spotify(keys.spotify);
+	// addToLog();
+	mySpotify.search({ type: 'track', query: title }, function (err, data) {
+		if (err) throw err;
+		// console.log(data);
+		console.log(`
+		Song Name: ${data.tracks.items[0].name}
+		Artist: ${data.tracks.items[0].artists[0].name}
+		Album: ${data.tracks.items[0].album.name}
+		Preview Link: ${data.tracks.items[0].album.artists[0].external_urls.spotify}
+		`);
+	});
+
+	// function spotifyThisSong() {
+	// 	let mySpotify = new spotify(keys.spotify);
+
+	// 	mySpotify.search({ type: 'track', query: 'Billie Jean' }, function (err, data) {
+	// 		if (err) {
+	// 			return console.log('Error occurred: ' + err);
+	// 		}
+	// 		console.log(`This is the ${data}!`);
+	// 	});
+
+
+
+	// let songName = process.argv[3];
+	// if (!songName) {
+	// 	songName = 'Billie Jean';
+	// }
+	// spotify.search({
+	// 	type: 'track', query: songName
+	// },
+	// 	function (err, data) {
+	// 		if (err) {
+	// 			return console.log('Error occurred: ' + err);
+	// 		}
+	// 		console.log(data);
+	// 	});
 }
