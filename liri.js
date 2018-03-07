@@ -73,8 +73,9 @@ inquirer
 					.then(function (userResponse) {
 						if (userResponse.movie !== "") {
 							movie = userResponse.movie;
-						};
-						if (userResponse.confirm) { movieThis(movie) };
+						}
+						let queryURL = "https://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+						movieThis(queryURL);
 					});
 				break;
 
@@ -162,7 +163,23 @@ function spotifyCall(title) {
 	// 	});
 }
 
-function movieThis() {
+// Movie This stuff
+function movieThis(queryURL) {
+	request(queryURL, function (error, response, body) {
+		if (!error && response.statusCode === 200) {
+			console.log(`
+			The Title:		${ JSON.parse(body).Title}
+			The Release Year:	${ JSON.parse(body).Year}
+			imdb Rating:		${ JSON.parse(body).imdbRating}
+			Rotten Tomatoes:	${ JSON.parse(body).Ratings[1].Value}
+			Contry Produced:	${ JSON.parse(body).Country}
+			Movie Language:		${ JSON.parse(body).Language}
+			The Players:		${ JSON.parse(body).Actors}
+			Movie Plot:		${ JSON.parse(body).Plot}
+										`);
+		} else console.log(`This is the error: ${error}`);
+	});
+
 	//  * Title of the movie.
 	//  * Year the movie came out.
 	//  * IMDB Rating of the movie.
@@ -171,4 +188,7 @@ function movieThis() {
 	//  * Language of the movie.
 	//  * Plot of the movie.
 	//  * Actors in the movie.
+
+
+
 }
