@@ -1,4 +1,7 @@
 node_modules
 .DS_Store
 .env
-keys.js                                                            
+keys.js
+liri.env
+liri.gitignore
+liri-example.js
