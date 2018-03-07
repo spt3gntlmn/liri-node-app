@@ -16,6 +16,7 @@ let userChoice;
 
 let samsTwitter = new Twitter(keys.twitter);
 
+// Inquirer prompts
 inquirer
 	.prompt([
 		{
@@ -91,8 +92,8 @@ inquirer
 			`)
 		};
 	});
-// Twitter bot stuff
 
+// Twitter bot stuff
 function Tweets() {
 
 	// let twitUsername = process.argv[3];
@@ -196,7 +197,6 @@ function doWhatItSays() {
 		if (error) {
 			return console.log(error);
 		}
-		console.log(data);
 		// Then split it by commas (to make it more readable; also makes it an array)
 		var dataArr = data.split(",");
 		// We will then re-display the content as an array for later use.
@@ -205,6 +205,27 @@ function doWhatItSays() {
 		let two = dataArr[1];
 		title = two;
 		console.log(`Ths is one: ${one} & this is two: ${two}.`);
+
+		inquirer.prompt([
+			{
+				type: "input",
+				message: `What song would you like to Spotify? Type the title\n Place quotes ("") around the title if more than one word.\n`,
+				name: two
+			},
+			{
+				type: "confirm",
+				message: "Are you sure:",
+				name: "confirm",
+				default: true
+			}
+		])
+			.then(function (userResponse) {
+				if (userResponse.title !== "") {
+					title = userResponse.title;
+				};
+				if (userResponse.confirm) { spotifyCall(title) };
+			});
+
 		spotifyCall(title);
 
 	});
