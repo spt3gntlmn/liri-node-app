@@ -9,7 +9,9 @@ let request = require("request");
 let liriArg = process.argv[2];
 let twittersToPrint = [];
 let twitterObj;
-var title = process.argv[3];
+let title = `MoonDance`;
+// let title = process.argv[3];
+let userChoice;
 
 let samsTwitter = new Twitter(keys.twitter);
 
@@ -18,12 +20,14 @@ inquirer
 		{
 			type: "list",
 			message: "What would you like to do?",
-			choices: [`my-tweets`, `spotify-this-song`, `movie-this`, `do-what-it-says`, ""],
+			choices: [`my-tweets`, `spotify-this-song`, `movie-this`, `do-what-it-says`],
 			name: "options"
 		},
-	]).then(function (inquirerResponse) {
+	]).then(function (user) {
 		// Make it so liri.js can take in one of the following commands:
-		switch (inquirerResponse) {
+		userChoice = user.options;
+		console.log(userChoice);
+		switch (userChoice) {
 			// case "test": console.log("Zoom says the teen w/ the new car!"); break;
 			case `my-tweets`: Tweets(); break;
 			case `spotify-this-song`: spotifyCall(title); break;
@@ -47,7 +51,7 @@ function Tweets() {
 	// if (!twitUsername) {
 	// 	twitUsername = 'Liri_Bots'; console.log("Hey!");
 	// }
-	let params = { screen_name: 'Liri_Bots' };
+	// let params = { screen_name: 'Liri_Bots' };
 	samsTwitter.get("statuses/user_timeline/", { count: 20 }, function (error, tweets, response) {
 		if (!error) {
 			for (let i = 0; i < tweets.length; i++) {
