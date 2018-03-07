@@ -11,7 +11,7 @@ let twittersToPrint = [];
 let twitterObj;
 let title = `The Sign Ace of Base`;
 let movie = `Mr. Nobody`;
-// let title = process.argv[3];
+let append = "";
 let userChoice;
 
 let samsTwitter = new Twitter(keys.twitter);
@@ -117,6 +117,7 @@ function Tweets() {
 			return;
 		}
 	});
+	logFile();
 }
 
 // Spotify bot stuff
@@ -136,6 +137,7 @@ function spotifyCall(title) {
 		Preview Link: ${data.tracks.items[0].album.artists[0].external_urls.spotify}
 		`);
 	});
+	logFile();
 
 	// function spotifyThisSong() {
 	// 	let mySpotify = new spotify(keys.spotify);
@@ -180,6 +182,7 @@ function movieThis(queryURL) {
 										`);
 		} else console.log(`This is the error: ${error}`);
 	});
+	logFile();
 
 	//  * Title of the movie.
 	//  * Year the movie came out.
@@ -200,33 +203,25 @@ function doWhatItSays() {
 		// Then split it by commas (to make it more readable; also makes it an array)
 		var dataArr = data.split(",");
 		// We will then re-display the content as an array for later use.
-		console.log(dataArr[0]);
+		// console.log(dataArr[0]);
 		let one = dataArr[0];
 		let two = dataArr[1];
 		title = two;
-		console.log(`Ths is one: ${one} & this is two: ${two}.`);
-
-		inquirer.prompt([
-			{
-				type: "input",
-				message: `What song would you like to Spotify? Type the title\n Place quotes ("") around the title if more than one word.\n`,
-				name: two
-			},
-			{
-				type: "confirm",
-				message: "Are you sure:",
-				name: "confirm",
-				default: true
-			}
-		])
-			.then(function (userResponse) {
-				if (userResponse.title !== "") {
-					title = userResponse.title;
-				};
-				if (userResponse.confirm) { spotifyCall(title) };
-			});
-
+		// console.log(`Ths is one: ${one} & this is two: ${two}.`);
+		logFile();
 		spotifyCall(title);
 
 	});
+}
+
+function logFile() {
+	// console.log(JSON.parse(inquirer));
+	// append = inquirer.prompt.user.options;
+	var fs = require("fs");
+	fs.appendFile("log.txt", ", " + userChoice, function (err) {
+		if (err) {
+			return console.log(err);
+		}
+	});
+	console.log("Content Updated!");
 }
