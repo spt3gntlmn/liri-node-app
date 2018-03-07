@@ -188,7 +188,4 @@ function movieThis(queryURL) {
 	//  * Language of the movie.
 	//  * Plot of the movie.
 	//  * Actors in the movie.
-
-
-
 }
