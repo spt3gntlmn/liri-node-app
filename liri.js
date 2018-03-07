@@ -10,6 +10,7 @@ let liriArg = process.argv[2];
 let twittersToPrint = [];
 let twitterObj;
 let title = `The Sign Ace of Base`;
+let movie = `Mr. Nobody`;
 // let title = process.argv[3];
 let userChoice;
 
@@ -30,11 +31,13 @@ inquirer
 		switch (userChoice) {
 			// case "test": console.log("Zoom says the teen w/ the new car!"); break;
 			case `my-tweets`: Tweets(); break;
+
+			// Spotify portion of the switch cases
 			case `spotify-this-song`:
 				inquirer.prompt([
 					{
 						type: "input",
-						message: `What song you like to Spotify? Type the title\n Place quotes ("") around the title if more than one word.\n`,
+						message: `What song would you like to Spotify? Type the title\n Place quotes ("") around the title if more than one word.\n`,
 						name: "title"
 					},
 					{
@@ -51,7 +54,30 @@ inquirer
 						if (userResponse.confirm) { spotifyCall(title) };
 					});
 				break;
-			case `movie-this`: movieThis(); break;
+
+			// Movie-This portion of the switch
+			case `movie-this`:
+				inquirer.prompt([
+					{
+						type: "input",
+						message: `What movie you like to search? Type the title\n Place quotes ("") around the title if more than one word.\n`,
+						name: "movie"
+					},
+					{
+						type: "confirm",
+						message: "Are you sure:",
+						name: "confirm",
+						default: true
+					}
+				])
+					.then(function (userResponse) {
+						if (userResponse.movie !== "") {
+							movie = userResponse.movie;
+						};
+						if (userResponse.confirm) { movieThis(movie) };
+					});
+				break;
+
 			case `do-what-it-says`: doWhatItSays(); break;
 			// The default case
 			default: console.log(`
@@ -134,4 +160,15 @@ function spotifyCall(title) {
 	// 		}
 	// 		console.log(data);
 	// 	});
+}
+
+function movieThis() {
+	//  * Title of the movie.
+	//  * Year the movie came out.
+	//  * IMDB Rating of the movie.
+	//  * Rotten Tomatoes Rating of the movie.
+	//  * Country where the movie was produced.
+	//  * Language of the movie.
+	//  * Plot of the movie.
+	//  * Actors in the movie.
 }
