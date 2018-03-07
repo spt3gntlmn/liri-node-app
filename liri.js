@@ -197,14 +197,15 @@ function doWhatItSays() {
 			return console.log(error);
 		}
 		console.log(data);
-		// Then split it by commas (to make it more readable; also makes it an arry)
+		// Then split it by commas (to make it more readable; also makes it an array)
 		var dataArr = data.split(",");
 		// We will then re-display the content as an array for later use.
 		console.log(dataArr[0]);
 		let one = dataArr[0];
 		let two = dataArr[1];
+		title = two;
 		console.log(`Ths is one: ${one} & this is two: ${two}.`);
-
+		spotifyCall(title);
 
 	});
 }
