@@ -9,7 +9,7 @@ let request = require("request");
 let liriArg = process.argv[2];
 let twittersToPrint = [];
 let twitterObj;
-let title = `MoonDance`;
+let title = `The Sign Ace of Base`;
 // let title = process.argv[3];
 let userChoice;
 
@@ -30,17 +30,38 @@ inquirer
 		switch (userChoice) {
 			// case "test": console.log("Zoom says the teen w/ the new car!"); break;
 			case `my-tweets`: Tweets(); break;
-			case `spotify-this-song`: spotifyCall(title); break;
+			case `spotify-this-song`:
+				inquirer.prompt([
+					{
+						type: "input",
+						message: `What song you like to Spotify? Type the title\n Place quotes ("") around the title if more than one word.\n`,
+						name: "title"
+					},
+					{
+						type: "confirm",
+						message: "Are you sure:",
+						name: "confirm",
+						default: true
+					}
+				])
+					.then(function (userResponse) {
+						if (userResponse.title !== "") {
+							title = userResponse.title;
+						};
+						if (userResponse.confirm) { spotifyCall(title) };
+					});
+				break;
 			case `movie-this`: movieThis(); break;
 			case `do-what-it-says`: doWhatItSays(); break;
 			// The default case
-			default: console.log(`\nPlease type: 'node liri.js' and then type in one of the following:
-		my-tweets\n
-		spotify-this-song\n
-		movie-this\n
-		do-what-it-says\n
-		Note: if the title is more than one word place quotes ("") around it.  Thanks!
-		`)
+			default: console.log(`
+														Please type: 'node liri.js' and then type in one of the following:
+														my-tweets\n
+														spotify-this-song\n
+														movie-this\n
+														do-what-it-says\n
+														Note: if the title is more than one word place quotes ("") around it.  Thanks!
+			`)
 		};
 	});
 // Twitter bot stuff
@@ -70,12 +91,16 @@ function Tweets() {
 	});
 }
 
+// Spotify bot stuff
 function spotifyCall(title) {
 	var mySpotify = new Spotify(keys.spotify);
-	// addToLog();
+	// if (!liriArg === "") {
+	// 	console.log(liriArg);
+	// 	title = liriArg;
+	// }
 	mySpotify.search({ type: 'track', query: title }, function (err, data) {
 		if (err) throw err;
-		// console.log(data);
+		console.log(title);
 		console.log(`
 		Song Name: ${data.tracks.items[0].name}
 		Artist: ${data.tracks.items[0].artists[0].name}
